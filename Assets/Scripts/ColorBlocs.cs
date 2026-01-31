@@ -11,6 +11,7 @@ public class ColorBloc : MonoBehaviour
     [SerializeField] private GameObject Cubes;
 
     public PlayerCharacter player;
+    public Health health;
 
     public int damage = 1;
 
@@ -18,6 +19,7 @@ public class ColorBloc : MonoBehaviour
     {
         material = GetComponent<Renderer>().material;
         player = FindAnyObjectByType<PlayerCharacter>();
+        health = FindAnyObjectByType<Health>();
     }
 
     void Update()
@@ -27,19 +29,19 @@ public class ColorBloc : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Health health = other.GetComponent<Health>();
 
         if (player == null) return;
 
         if (player.MaskIndex == ColorIndex)
         {
             Debug.Log("Bonne couleur");
-            gameObject.SetActive(false);
         }
-        else
+        else if (player.MaskIndex != ColorIndex)
         {
             Debug.Log("Mauvaise couleur");
-            health.TakeDamage(damage);
+            if ( other.CompareTag("Player"))
+                health.TakeDamage(damage);
+                gameObject.SetActive(false);
         }
     }
 

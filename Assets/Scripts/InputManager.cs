@@ -1,95 +1,70 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using System.Linq;
 
-public class UnstableInputManager : MonoBehaviour
+public class DynamicInputManager : MonoBehaviour
 {
-    public static UnstableInputManager Instance;
+    public List<Key> allKeys; 
+    private Dictionary<string, Key> player1Bindings = new Dictionary<string, Key>();
+    private Dictionary<string, Key> player2Bindings = new Dictionary<string, Key>();
 
-    [Header("Keyboard pool (42 touches)")]
-    public List<Key> keyboardPool = new List<Key>();
+    private Dictionary<Key, int> keyPressCount = new Dictionary<Key, int>();
 
-    private List<UnstableKey> activeKeys = new List<UnstableKey>();
+    private string[] actions = { "MoveLeft", "MoveRight", "Shoot", "ChangeMask" };
 
-    private void Awake()
+    void Start()
     {
-        Instance = this;
+        player1Bindings = GenerateRandomBindings();
+        player2Bindings = GenerateRandomBindings();
+
+        foreach (var key in allKeys)
+            keyPressCount[key] = 0;
     }
 
-    private void Start()
+    void Update()
     {
-        InitPlayer(1);
-        InitPlayer(2);
+        HandlePlayerInput(player1Bindings, 1);
+        HandlePlayerInput(player2Bindings, 2);
     }
 
-    private void Update()
+    private Dictionary<string, Key> GenerateRandomBindings()
     {
-        foreach (var unstableKey in activeKeys.ToList())
+        var bindings = new Dictionary<string, Key>();
+        List<Key> keysLeft = new List<Key>(allKeys);
+
+        foreach (var action in actions)
         {
-            if (Keyboard.current[unstableKey.key].wasPressedThisFrame)
+            int index = Random.Range(0, keysLeft.Count);
+            bindings[action] = keysLeft[index];
+            keysLeft.RemoveAt(index); 
+        }
+        return bindings;
+    }
+
+    private void HandlePlayerInput(Dictionary<string, Key> bindings, int playerID)
+    {
+        foreach (var action in actions)
+        {
+            Key key = bindings[action];
+            if (Keyboard.current[key].wasPressedThisFrame)
             {
-                TriggerKey(unstableKey);
+                Debug.Log($"Player {playerID} {action} pressed on key {key}");
+
+                keyPressCount[key]++;
+                if (keyPressCount[key] >= 3)
+                {
+                    keyPressCount[key] = 0;
+
+                    Key newKey;
+                    do
+                    {
+                        newKey = allKeys[Random.Range(0, allKeys.Count)];
+                    } while (bindings.ContainsValue(newKey)); 
+                    bindings[action] = newKey;
+
+                    Debug.Log($"Action {action} du Player {playerID} remappée à {newKey}");
+                }
             }
         }
-    }
-
-
-    void InitPlayer(int playerId)
-    {
-        AssignNewKey(PlayerAction.Left, playerId);
-        AssignNewKey(PlayerAction.Right, playerId);
-        AssignNewKey(PlayerAction.Shoot, playerId);
-        AssignNewKey(PlayerAction.Skill, playerId);
-    }
-
-
-    void AssignNewKey(PlayerAction action, int playerId)
-    {
-        List<Key> freeKeys = keyboardPool
-            .Where(k => !activeKeys.Any(a => a.key == k))
-            .ToList();
-
-        if (freeKeys.Count == 0)
-        {
-            Debug.LogWarning("Plus aucune touche libre !");
-            return;
-        }
-
-        Key newKey = freeKeys[Random.Range(0, freeKeys.Count)];
-
-        activeKeys.Add(new UnstableKey
-        {
-            key = newKey,
-            action = action,
-            playerId = playerId,
-            remainingUses = Random.Range(3, 7)
-        });
-
-        Debug.Log($"[P{playerId}] {action} ? {newKey} ({activeKeys.Last().remainingUses} uses)");
-    }
-
-
-    void TriggerKey(UnstableKey unstableKey)
-    {
-        ExecuteAction(unstableKey.playerId, unstableKey.action);
-
-        unstableKey.remainingUses--;
-
-        if (unstableKey.remainingUses <= 0)
-        {
-            activeKeys.Remove(unstableKey);
-            AssignNewKey(unstableKey.action, unstableKey.playerId);
-        }
-    }
-
-    // ---------------- PLAYER LINK ----------------
-
-    void ExecuteAction(int playerId, PlayerAction action)
-    {
-        PlayerCharacter player = FindObjectsOfType<PlayerCharacter>()
-            .First(p => p.PlayerId == playerId);
-
-        player.ExecuteAction(action);
     }
 }
