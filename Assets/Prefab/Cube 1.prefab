@@ -69,7 +69,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: d0d2a22de41c5684ca5227400c853862, type: 2}
+  - {fileID: 2100000, guid: 3e4e8f0c685838e46b1c63b8b0d17e78, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -126,6 +126,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ColorBloc
   ColorIndex: 0
+  Cubes: {fileID: 2747587260226931117}
 --- !u!54 &7588095038613395886
 Rigidbody:
   m_ObjectHideFlags: 0
