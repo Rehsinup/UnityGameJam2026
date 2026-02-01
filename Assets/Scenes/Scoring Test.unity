@@ -119,6 +119,57 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &322365804
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 322365805}
+  - component: {fileID: 322365806}
+  m_Layer: 0
+  m_Name: ColorManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &322365805
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 322365804}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 629096552}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &322365806
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 322365804}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8d80ec34d48ac64ca869bd61b4d2f7b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BackgroundColorChanging
+  volume: {fileID: 1275963884}
+  hue: 0
+--- !u!4 &629096552 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5970945942614232178, guid: 4a4acb2f7fd9df14bb8c8b3d2de68443, type: 3}
+  m_PrefabInstance: {fileID: 3581217810033133634}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &780881145
 GameObject:
   m_ObjectHideFlags: 0
@@ -130,7 +181,7 @@ GameObject:
   - component: {fileID: 780881147}
   - component: {fileID: 780881146}
   m_Layer: 6
-  m_Name: pierre_4_0
+  m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -472,6 +523,17 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!114 &1275963884 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7712693988035306179, guid: 4a4acb2f7fd9df14bb8c8b3d2de68443, type: 3}
+  m_PrefabInstance: {fileID: 3581217810033133634}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Core.Runtime::UnityEngine.Rendering.Volume
 --- !u!1 &2003975365
 GameObject:
   m_ObjectHideFlags: 0
@@ -605,7 +667,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 5970945942614232178, guid: 4a4acb2f7fd9df14bb8c8b3d2de68443, type: 3}
+      insertIndex: 0
+      addedObject: {fileID: 322365805}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4a4acb2f7fd9df14bb8c8b3d2de68443, type: 3}
 --- !u!1001 &3824034400996728164
