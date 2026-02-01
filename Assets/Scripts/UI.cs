@@ -1,10 +1,13 @@
 using UnityEngine;
 using TMPro;
 
+
 public class UI : MonoBehaviour
 {
     public Health playerHealth;
     public TMP_Text healthText;
+
+
 
     private void Update()
     {

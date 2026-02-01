@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class PlayerCharacter : MonoBehaviour
 {
@@ -11,18 +12,22 @@ public class PlayerCharacter : MonoBehaviour
 
     [Header("Mask Settings")]
     public int MaskIndex = 0;
-    public Color[] playerMasks = new Color[2]; 
+    public Color[] playerMasks = new Color[2];  
     [SerializeField] private GameObject Player;
     private Material material;
+
+    [Header("Sprites")]
+    [SerializeField] private SpriteRenderer characterSprite; 
+    public Sprite[] maskSprites = new Sprite[2];            
 
     [Header("Projectile Settings")]
     public GameObject projectilePrefab;
     public float projectileSpeed = 10f;
 
-    [Header("Input Keys (assignées par DynamicInputManager)")]
+    [Header("Input Keys")]
     public Key moveLeftKey;
     public Key moveRightKey;
-    public Key skillKey;
+    public Key skillKey; 
     public Key shootKey;
 
     [Header("TMP Texts")]
@@ -30,6 +35,10 @@ public class PlayerCharacter : MonoBehaviour
     public TMP_Text moveRightText;
     public TMP_Text swapMaskText;
     public TMP_Text shootText;
+
+    [Header("UI Mask Sprite")]
+    public Image maskUIImage;      
+    public Sprite[] maskUISprites;
 
     public static List<PlayerCharacter> AllPlayers = new List<PlayerCharacter>();
 
@@ -42,6 +51,13 @@ public class PlayerCharacter : MonoBehaviour
     {
         material = Player.GetComponent<Renderer>().material;
         material.SetColor("_BaseColor", CurrentMaskColor);
+
+        if (characterSprite != null && maskSprites.Length > 0)
+            characterSprite.sprite = maskSprites[MaskIndex];
+
+        if (maskUIImage != null && maskUISprites.Length > 0)
+            maskUIImage.sprite = maskUISprites[MaskIndex];
+
         UpdateBindingsUI();
     }
 
@@ -55,7 +71,15 @@ public class PlayerCharacter : MonoBehaviour
     public void SwapMask()
     {
         MaskIndex = (MaskIndex == 0) ? 1 : 0;
-        material.SetColor("_BaseColor", CurrentMaskColor);
+
+        if (material != null)
+            material.SetColor("_BaseColor", CurrentMaskColor);
+
+        if (characterSprite != null && maskSprites.Length > 1)
+            characterSprite.sprite = maskSprites[MaskIndex];
+
+        if (maskUIImage != null && maskUISprites.Length > 1)
+            maskUIImage.sprite = maskUISprites[MaskIndex];
     }
 
     public void Shoot()

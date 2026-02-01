@@ -13,6 +13,7 @@ public class ProceduralTrigger : MonoBehaviour
     {
         if (other.CompareTag("Collider"))
         {
+            Debug.Log(gameObject.name);
             Instantiate(prefab, new Vector3( 0, spawnHeight, 0), Quaternion.identity);
         }
     }
