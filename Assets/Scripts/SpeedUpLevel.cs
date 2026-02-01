@@ -1,34 +1,28 @@
 using UnityEngine;
+using System.Collections;
 
 public class SpeedUpLevel : MonoBehaviour
 {
-    BallMovement meteor;
-
-
-    public float acceleration = 1f;
+    [SerializeField] private float acceleration = 1f;
 
     [Tooltip("Multiplicateur (> 1)")]
-    [SerializeField] float tauxAcceleration = 1.1f;
+    public float tauxAcceleration = 1.1f;
 
-    [SerializeField] float interval = 10f;
+    public float interval = 10f;
 
-
+    public float Acceleration => acceleration;
 
     private void Start()
     {
-        InvokeRepeating(nameof(IncreaseAcceleration), interval, interval);
-
-        meteor = FindFirstObjectByType<BallMovement>();
+        StartCoroutine(AccelerationRoutine());
     }
 
-    private void Update()
+    private IEnumerator AccelerationRoutine()
     {
-        Debug.Log(acceleration);
-    }
-
-    private void IncreaseAcceleration()
-    {
-        acceleration *= tauxAcceleration;
-        meteor.speed *= acceleration;
+        while (true)
+        {
+            yield return new WaitForSeconds(interval);
+            acceleration *= tauxAcceleration;
+        }
     }
 }
