@@ -1,25 +1,17 @@
-using System.Drawing;
 using UnityEngine;
 
 public class ColorBloc : MonoBehaviour
 {
-    [Tooltip("0 = Rouge, 1 = Vert, 2 = Bleu, 3 = Jaune")]
-    public int ColorIndex;
+    [Tooltip("Couleur du cube")]
+    public Color blocColor;
 
     private Material material;
-
-    [SerializeField] private GameObject Cubes;
-
-    public PlayerCharacter player;
-    public Health health;
-
     public int damage = 1;
 
-    private void Start()
+    void Start()
     {
         material = GetComponent<Renderer>().material;
-        player = FindAnyObjectByType<PlayerCharacter>();
-        health = FindAnyObjectByType<Health>();
+        material.color = blocColor;
     }
 
     void Update()
@@ -29,41 +21,31 @@ public class ColorBloc : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-
+        PlayerCharacter player = other.GetComponent<PlayerCharacter>();
         if (player == null) return;
 
-        if (player.MaskIndex == ColorIndex)
+        if (player.CurrentMaskColor != material.color)
         {
-            Debug.Log("Bonne couleur");
-        }
-        else if (player.MaskIndex != ColorIndex)
-        {
-            Debug.Log("Mauvaise couleur");
-            if ( other.CompareTag("Player"))
-                health.TakeDamage(damage);
-                gameObject.SetActive(false);
+            Health health = player.GetComponent<Health>();
+            if (health != null)
+                health.TakeDamage(player, damage);
         }
     }
-
 
     private void DitherCubes()
     {
-        if (player.MaskIndex == ColorIndex)
+        bool anyPlayerHasColor = false;
+        foreach (var player in PlayerCharacter.AllPlayers)
         {
-            Debug.Log("Dither On");
-            UnityEngine.Color c = material.GetColor("_BaseColor");
-            c.a = 0.1f;
-            material.SetColor("_BaseColor", c);
+            if (player.CurrentMaskColor == material.color)
+            {
+                anyPlayerHasColor = true;
+                break;
+            }
         }
-        else
-        {
-            Debug.Log("Dither Off");
-            UnityEngine.Color c = material.GetColor("_BaseColor");
-            c.a = 1f;
-            material.SetColor("_BaseColor", c);
-        }
-          
 
+        Color c = material.color;
+        c.a = anyPlayerHasColor ? 0.1f : 1f;
+        material.SetColor("_BaseColor", c);
     }
-
 }

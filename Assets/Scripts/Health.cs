@@ -1,44 +1,31 @@
-using System;
 using UnityEngine;
-
 
 public class Health : MonoBehaviour
 {
-
-    [Header("Health")]
     public int maxHealth = 3;
     public int currentHealth;
 
-    public int damage = 1;
-
-
-    void Start()
-    {
-        
-    }
-
-    void Update()
-    {
-        
-    }
-    private void Awake()
+    void Awake()
     {
         currentHealth = maxHealth;
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(PlayerCharacter player, int damage)
     {
-        PlayerCharacter player = GetComponent<PlayerCharacter>();
         currentHealth -= damage;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
-        player.transform.position = new Vector3(0, player.transform.position.y-1,-1);
 
-        Debug.Log(" Vie : " + currentHealth);
+        if (player != null)
+        {
+            Vector3 pos = player.transform.position;
+            player.transform.position = new Vector3(pos.x, pos.y - 1f, pos.z);
+        }
+
+        Debug.Log($"{player.name} Vie : {currentHealth}");
 
         if (currentHealth <= 0)
         {
-            Debug.Log("Game Over");
+            Debug.Log($"{player.name} Game Over !");
         }
     }
-
 }
