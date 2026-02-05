@@ -36,9 +36,8 @@ public class PlayerCharacter : MonoBehaviour
     public TMP_Text swapMaskText;
     public TMP_Text shootText;
 
-    [Header("UI Mask Sprite")]
-    public Image maskUIImage;      
-    public Sprite[] maskUISprites;
+    [Header("UI Mask Objects")]
+    public GameObject[] maskUIObjects = new GameObject[2];
 
     public static List<PlayerCharacter> AllPlayers = new List<PlayerCharacter>();
 
@@ -55,9 +54,7 @@ public class PlayerCharacter : MonoBehaviour
         if (characterSprite != null && maskSprites.Length > 0)
             characterSprite.sprite = maskSprites[MaskIndex];
 
-        if (maskUIImage != null && maskUISprites.Length > 0)
-            maskUIImage.sprite = maskUISprites[MaskIndex];
-
+        UpdateMaskUI();
         UpdateBindingsUI();
     }
 
@@ -78,8 +75,7 @@ public class PlayerCharacter : MonoBehaviour
         if (characterSprite != null && maskSprites.Length > 1)
             characterSprite.sprite = maskSprites[MaskIndex];
 
-        if (maskUIImage != null && maskUISprites.Length > 1)
-            maskUIImage.sprite = maskUISprites[MaskIndex];
+        UpdateMaskUI();
     }
 
     public void Shoot()
@@ -98,4 +94,18 @@ public class PlayerCharacter : MonoBehaviour
         if (swapMaskText != null) swapMaskText.text = $"Swap: {skillKey}";
         if (shootText != null) shootText.text = $"Shoot: {shootKey}";
     }
+
+    private void UpdateMaskUI()
+    {
+        if (maskUIObjects == null || maskUIObjects.Length < 2)
+            return;
+
+        for (int i = 0; i < maskUIObjects.Length; i++)
+        {
+            if (maskUIObjects[i] != null)
+                maskUIObjects[i].SetActive(i == MaskIndex);
+        }
+    }
+
+
 }

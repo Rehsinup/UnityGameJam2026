@@ -1,15 +1,21 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Health : MonoBehaviour
 {
     public int maxHealth = 3;
     public int currentHealth;
+    public AudioManager AudioManager;
 
     void Awake()
     {
         currentHealth = maxHealth;
     }
 
+    void Start()
+    {
+        AudioManager = FindObjectOfType<AudioManager>();
+    }
     public void TakeDamage(PlayerCharacter player, int damage)
     {
         currentHealth -= damage;
@@ -26,6 +32,9 @@ public class Health : MonoBehaviour
         if (currentHealth <= 0)
         {
             Debug.Log($"{player.name} Game Over !");
+            AudioManager.PlaySound("Mort");
+            WaitForSeconds wait = new WaitForSeconds(2f);
+            SceneManager.LoadScene("Menu");
         }
     }
 }

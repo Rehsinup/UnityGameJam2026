@@ -5,14 +5,31 @@ public class ColorBloc : MonoBehaviour
     [Tooltip("Couleur du cube")]
     public Color blocColor;
 
-    private Material material;
     public int damage = 1;
+
+    private Material material;
+    private SpriteRenderer childSprite;
 
     void Start()
     {
-        material = GetComponent<Renderer>().material;
-        material.color = blocColor;
+        Initialize();
     }
+
+
+    public void Initialize()
+    {
+        Renderer rend = GetComponent<Renderer>();
+        if (rend != null)
+        {
+            material = rend.material;
+            material.color = blocColor;
+        }
+
+        childSprite = GetComponentInChildren<SpriteRenderer>();
+
+        DitherCubes();
+    }
+
 
     void Update()
     {
@@ -24,28 +41,62 @@ public class ColorBloc : MonoBehaviour
         PlayerCharacter player = other.GetComponent<PlayerCharacter>();
         if (player == null) return;
 
-        if (player.CurrentMaskColor != material.color)
+        bool someoneHasGoodColor = false;
+
+        foreach (var p in PlayerCharacter.AllPlayers)
+        {
+            if (ColorMatches(p.CurrentMaskColor, blocColor))
+            {
+                someoneHasGoodColor = true;
+                break;
+            }
+        }
+
+        if (!someoneHasGoodColor)
         {
             Health health = player.GetComponent<Health>();
             if (health != null)
                 health.TakeDamage(player, damage);
         }
+
+        gameObject.SetActive(false);
     }
 
     private void DitherCubes()
     {
-        bool anyPlayerHasColor = false;
+        bool shouldBeTransparent = false;
+
         foreach (var player in PlayerCharacter.AllPlayers)
         {
-            if (player.CurrentMaskColor == material.color)
+            if (ColorMatches(player.CurrentMaskColor, blocColor))
             {
-                anyPlayerHasColor = true;
+                shouldBeTransparent = true;
                 break;
             }
         }
 
-        Color c = material.color;
-        c.a = anyPlayerHasColor ? 0.1f : 1f;
-        material.SetColor("_BaseColor", c);
+        float targetAlpha = shouldBeTransparent ? 0.1f : 1f;
+
+        if (material != null)
+        {
+            Color c = material.color;
+            c.a = targetAlpha;
+            material.SetColor("_BaseColor", c);
+        }
+
+        if (childSprite != null)
+        {
+            Color sc = childSprite.color;
+            sc.a = targetAlpha;
+            childSprite.color = sc;
+        }
+    }
+
+    private bool ColorMatches(Color a, Color b, float tolerance = 0.01f)
+    {
+        return Mathf.Abs(a.r - b.r) < tolerance &&
+               Mathf.Abs(a.g - b.g) < tolerance &&
+               Mathf.Abs(a.b - b.b) < tolerance &&
+               Mathf.Abs(a.a - b.a) < tolerance;
     }
 }

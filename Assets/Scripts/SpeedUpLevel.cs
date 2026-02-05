@@ -5,6 +5,8 @@ public class SpeedUpLevel : MonoBehaviour
 {
     [SerializeField] private float acceleration = 1f;
 
+    ProceduralMove move;
+
     [Tooltip("Multiplicateur (> 1)")]
     public float tauxAcceleration = 1.1f;
 
@@ -15,6 +17,7 @@ public class SpeedUpLevel : MonoBehaviour
     private void Start()
     {
         StartCoroutine(AccelerationRoutine());
+        move = FindAnyObjectByType<ProceduralMove>();
     }
 
     private IEnumerator AccelerationRoutine()
@@ -23,6 +26,21 @@ public class SpeedUpLevel : MonoBehaviour
         {
             yield return new WaitForSeconds(interval);
             acceleration *= tauxAcceleration;
+            FEUR();
+            Finder();
         }
+    }
+
+    private void FEUR()
+    {
+        if (move != null)
+        {
+            move.moveSpeed *= acceleration;
+        }
+    }
+
+    private void Finder()
+    {
+        move = FindAnyObjectByType<ProceduralMove>();
     }
 }
